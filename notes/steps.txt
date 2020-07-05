@@ -1,0 +1,116 @@
+-1.	To connect to Cloud version
+
+Umeshs-MacBook-Pro:4.2.0 umeshpatil$ pwd
+/usr/local/Cellar/mongodb-community-shell/4.2.0
+
+> mongo "mongodb+srv://cluster0-oq9dz.mongodb.net/<dbname>" --username umesh
+
+
+0.	Download Community version of MongoDB and install locally.
+
+	https://www.mongodb.com/try/download/community
+
+> Umeshs-MacBook-Pro:~ umeshpatil$ pwd
+/Users/umeshpatil
+
+1.	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+
+2. Created spring-boot-starter-webflux project from https://start.spring.io/
+
+3.	Created project as:
+
+	https://developer.okta.com/blog/2018/09/24/reactive-apis-with-spring-webflux
+
+4.	Removing Lombok erros in Eclipse (very critical):
+
+	https://projectlombok.org/setup/eclipse
+
+5.	Installing MongoDB Compass
+
+	https://docs.mongodb.com/compass/current/install/
+	
+	
+	
+	
+	
+
+Umeshs-MacBook-Pro:~ umeshpatil$ brew services start mongodb-community@4.2
+==> Tapping homebrew/services
+Cloning into '/usr/local/Homebrew/Library/Taps/homebrew/homebrew-services'...
+remote: Enumerating objects: 44, done.
+remote: Counting objects: 100% (44/44), done.
+remote: Compressing objects: 100% (40/40), done.
+remote: Total 821 (delta 16), reused 16 (delta 3), pack-reused 777
+Receiving objects: 100% (821/821), 229.91 KiB | 2.77 MiB/s, done.
+Resolving deltas: 100% (333/333), done.
+Tapped 1 command (39 files, 307.4KB).
+==> Successfully started `mongodb-community` (label: homebrew.mxcl.mongodb-community)
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ ps aux | grep -v grep | grep mongod
+umeshpatil       24455   0.5  0.3  5561004  43308   ??  S     5:02PM   0:00.76 /usr/local/opt/mongodb-community/bin/mongod --config /usr/local/etc/mongod.conf
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ ps aux | grep -v grep | grep mongod
+umeshpatil       24455   0.0  0.1  5569764  13452   ??  S     5:02PM   1:11.36 /usr/local/opt/mongodb-community/bin/mongod --config /usr/local/etc/mongod.conf
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ mongod --help
+-bash: mongod: command not found
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ 
+Umeshs-MacBook-Pro:~ umeshpatil$ mongo
+MongoDB shell version v4.2.0
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("457e25db-69fa-470a-a0bb-808ba18f1027") }
+MongoDB server version: 4.2.8
+Server has startup warnings: 
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] 
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] 
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] 
+2020-07-01T17:02:56.174-0700 I  CONTROL  [initandlisten] ** WARNING: soft rlimits too low. Number of files is 256, should be at least 1000
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+
+
+
+
+spring.data.mongodb.authentication-database= # Authentication database name.
+spring.data.mongodb.database=test # Database name.
+spring.data.mongodb.field-naming-strategy= # Fully qualified name of the FieldNamingStrategy to use.
+spring.data.mongodb.grid-fs-database= # GridFS database name.
+spring.data.mongodb.host=localhost # Mongo server host.
+spring.data.mongodb.password= # Login password of the mongo server.
+spring.data.mongodb.port=27017 # Mongo server port.
+spring.data.mongodb.repositories.enabled=true # Enable Mongo repositories.
+spring.data.mongodb.uri=mongodb://localhost/test # Mongo database URI. When set, host and port are ignored.
+spring.data.mongodb.username= # Login user of the mongo server.
+
+
+
+
+https://stackoverflow.com/questions/55135393/exception-authenticating-mongocredential-and-uncategorized-mongo-db-exception/55138982
+
+https://stackoverflow.com/questions/17613901/warning-the-requested-profile-projectname-could-not-be-activated-because-it-do
+
+https://stackoverflow.com/questions/27153024/repository-element-was-not-specified-in-the-pom-inside-distributionmanagement-el/45352560
+
+
+
+
+
+mvn -Dcom.neosemantix.survy.BasicSurveyTest -Dmaven.surefire.debug test
