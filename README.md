@@ -1,1 +1,1 @@
-This is a survey application implementation using Spring Boot JavaRx and MongoDB.
+This is a survey application implemented using Spring Boot JavaRx and MongoDB.
