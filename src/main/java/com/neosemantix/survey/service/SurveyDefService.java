@@ -1,4 +1,5 @@
-// Copyright 2019; All rights reserved with NeoSemantix, Inc.
+// MIT License
+// Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey.service;
 
 import org.springframework.beans.factory.annotation.Autowired;

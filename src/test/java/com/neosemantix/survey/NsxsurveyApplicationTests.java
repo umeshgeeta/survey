@@ -1,3 +1,5 @@
+// MIT License
+// Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey;
 
 import org.junit.jupiter.api.Test;

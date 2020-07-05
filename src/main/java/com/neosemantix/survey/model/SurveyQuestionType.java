@@ -1,3 +1,5 @@
+// MIT License
+// Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey.model;
 
 public enum SurveyQuestionType {
