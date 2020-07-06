@@ -4,6 +4,7 @@ package com.neosemantix.survey.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.neosemantix.survey.model.SurveyResponse;
 import com.neosemantix.survey.repo.SurveyResponseRepository;
@@ -26,8 +27,11 @@ public class SurveyResponseService {
 	}
 	
 	public Flux<SurveyResponse> getAll(String surveyDefId){
-		// TBD
-		return null;
+		return srRepository.findAllResponses(surveyDefId);
+	}
+	
+	public Mono<ServerResponse> delete(SurveyResponse sr){
+		return srRepository.delete(sr).then(ServerResponse.ok().build());
 	}
 
 }

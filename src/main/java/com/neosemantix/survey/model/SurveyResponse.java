@@ -31,12 +31,12 @@ import lombok.NoArgsConstructor;
 public class SurveyResponse {
 
 	@Id
-	private String srid;
+	private String id;
 	
 	/**
 	 * Id of the survery definition to which this response belongs to.
 	 */
-	private String whichSurvey;
+	private String surveyId;
 	
 	private Date when;
 	

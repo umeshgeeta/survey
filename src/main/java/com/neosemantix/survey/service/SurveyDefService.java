@@ -2,12 +2,17 @@
 // Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey.service;
 
+import java.util.Map;
+import java.util.UUID;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.neosemantix.survey.model.SurveyDef;
+import com.neosemantix.survey.model.SurveyQuestion;
 import com.neosemantix.survey.repo.SurveyDefRepository;
 
 import reactor.core.publisher.Flux;
@@ -44,7 +49,24 @@ public class SurveyDefService {
 	}
 
 	public Mono<SurveyDef> create(SurveyDef sd) {
-		return this.sdRepository.save(sd);
+		if (sd != null) {
+			Map<Integer, SurveyQuestion> qs = sd.getQuestions();
+			if (qs != null && !qs.isEmpty()) {
+				for (Integer qk: qs.keySet()) {
+					SurveyQuestion q = qs.get(qk);
+					if (q.getId() == null) {
+						// it is bson object id
+						// if we need completely Java specific, change it to
+						// java.util.UUID
+						q.setId(new ObjectId().toString());
+					}
+				}
+			}
+			return this.sdRepository.save(sd);
+		} else {
+			return null;
+		}
+		
 	}
 
 	public Mono<ServerResponse> delete(SurveyDef sd) {
@@ -62,5 +84,4 @@ public class SurveyDefService {
 	public void deleteAll() {
 		sdRepository.deleteAll().then().block();
 	}
-
 }

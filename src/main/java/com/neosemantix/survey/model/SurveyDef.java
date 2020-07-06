@@ -10,13 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 /**
- * We allow only one single submission per user, which cab be optionally edited.
- * 
  * Model is each survey definition has a unique id. Each survey definition 
- * comprises of a set of survey questions. Each survey question has a unique id.
- * 
- * For each survey definition, there will be multiple survey responses associated
- * as multiple users responds.
+ * comprises of a set of survey questions. For each survey definition, there
+ * will be multiple survey responses associated as multiple users responds.
  */
 @Document 
 @Data 
@@ -33,6 +29,7 @@ public class SurveyDef {
 	
 	/**
 	 * Order of question is important for display, so we use map.
+	 * We start with order number 1, followed 2, 3 etc.
 	 */
 	private Map<Integer, SurveyQuestion> questions;
 	

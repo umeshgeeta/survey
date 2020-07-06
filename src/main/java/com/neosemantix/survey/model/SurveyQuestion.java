@@ -14,7 +14,7 @@ import lombok.Data;
 public class SurveyQuestion {
 
 	@Id
-	private String sqid;
+	private String id;
 	
 	private SurveyQuestionType type;
 	
