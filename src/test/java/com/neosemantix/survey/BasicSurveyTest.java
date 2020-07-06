@@ -35,8 +35,7 @@ public class BasicSurveyTest {
 
 	private final SurveyDefService surveyDefService;
 	private final SurveyResponseService responseService;
-	
-	private static Set<SurveyDef> deletedSurveyDef;
+
 	private static SurveyDef savedSd;
 	
 	public BasicSurveyTest(@Autowired SurveyDefService sds,
@@ -48,41 +47,60 @@ public class BasicSurveyTest {
 	@Test
 	@Order(1)
 	public void saveTestSurvy() {
-		deletedSurveyDef = new HashSet<>();
+		Set<String> deleteSurveyDefIds = new HashSet<>();
 		// We first eleminate earlier sample survey documents.
-		surveyDefService.getAllByName(SurveyName, SurveyOwner).subscribe(next -> {
-			// waiting to get this response is critical
-			Mono<ServerResponse> dsd = surveyDefService.delete(next);
-			// we need to ensure that we get the server response for delete confirmation
-			System.out.println("Delete response is: "+ dsd.block().rawStatusCode() + " Deleted document is: " + next);
-			deletedSurveyDef.add(next);
-			// we delete all survey responses associated with this survey as well
-			responseService.getAll(next.getId()).subscribe(resp -> {
-				Mono<ServerResponse> sr = responseService.delete(resp);
-				System.out.println("Delete response: "+ sr.block().rawStatusCode() + " Deleted response is: " + resp);
-			});
+		Flux<SurveyDef> fluxsd = surveyDefService.getAllByName(SurveyName, SurveyOwner);
+		fluxsd.subscribe(next -> {
+			if (next != null) {
+				deleteSurveyDefIds.add(next.getId());
+				// waiting to get this response is critical
+				Mono<ServerResponse> dsd = surveyDefService.delete(next);
+				int status = dsd.block().rawStatusCode();
+				// we need to ensure that we get the server response for delete confirmation
+				System.out.println("SurveyDef delete status is: "+ status + " Deleted document is: " + next);
+			}
 		});
-		
+		fluxsd.blockLast();
+		System.out.println("Deleted survey defs are: " + deleteSurveyDefIds);
+		boolean responsesDeleted = false;
+		for (String sdid: deleteSurveyDefIds) {
+			System.out.println("Will search responses for survey def: " + sdid);
+			Flux<SurveyResponse> responses = responseService.getAll(sdid);
+			
+			SurveyResponse firstResponse = responses.blockFirst();
+			SurveyResponse lastResponse = responses.blockLast();
+			if (firstResponse != null) {
+				// we delete all survey responses associated with this survey as well
+				Mono<ServerResponse> sr = responseService.delete(firstResponse);
+				int status = sr.block().rawStatusCode();
+				System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + firstResponse);
+				if (lastResponse != null) {
+					sr = responseService.delete(lastResponse);
+					status = sr.block().rawStatusCode();
+					System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + lastResponse);
+					responsesDeleted = true;
+				} else {
+					responsesDeleted = true;
+				}
+			}  else {
+				responsesDeleted = true;
+			}
+		}
+		while (!responsesDeleted) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		savedSd = surveyDefService.create(buildTestSurvey()).block();
-		System.out.println(savedSd);
+		System.out.println("Saved Survey Def is: " +savedSd);
 	}
 	
 	@Test
 	@Order(2)
-	public void recordResponses() {
-		if (deletedSurveyDef != null && !deletedSurveyDef.isEmpty()) {
-			int howManySurveys = deletedSurveyDef.size();
-			for (SurveyDef sd: deletedSurveyDef) {
-				this.responseService.getAll(sd.getId()).subscribe(sr -> {
-					Mono<ServerResponse> dsd = responseService.delete(sr);
-					System.out.println("Delete response is: "+ dsd.block().rawStatusCode() + " Deleted response is: " + sr);
-				});
-			}
-			System.out.println("Deleted responses for " + howManySurveys);
-		} else {
-			System.out.println("Did not find any survey responses to delete");
-		}
-		
+	public void recordResponses() {	
 		SurveyResponse[] sdrs = buildTestSurveyResponse(savedSd);
 		SurveyResponse sr0 = responseService.record(sdrs[0]).block();
 		System.out.println("Saved: " + sr0);
