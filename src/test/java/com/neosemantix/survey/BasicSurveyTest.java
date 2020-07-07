@@ -102,9 +102,13 @@ public class BasicSurveyTest {
 	@Order(2)
 	public void recordResponses() {	
 		SurveyResponse[] sdrs = buildTestSurveyResponse(savedSd);
-		SurveyResponse sr0 = responseService.record(sdrs[0]).block();
+		
+		String resp0Id = responseService.record(sdrs[0]);
+		SurveyResponse sr0 = responseService.getById(resp0Id).block();
 		System.out.println("Saved: " + sr0);
-		SurveyResponse sr1 = responseService.record(sdrs[1]).block();
+		
+		String resp1Id = responseService.record(sdrs[1]);
+		SurveyResponse sr1 = responseService.getById(resp1Id).block();
 		System.out.println("Saved: " + sr1);
 	}
 	
