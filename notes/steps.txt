@@ -1,38 +1,11 @@
--1.	To connect to Cloud version
-
-Umeshs-MacBook-Pro:4.2.0 umeshpatil$ pwd
-/usr/local/Cellar/mongodb-community-shell/4.2.0
-
-> mongo "mongodb+srv://cluster0-oq9dz.mongodb.net/<dbname>" --username umesh
-
-
-0.	Download Community version of MongoDB and install locally.
+1) Download Community version of MongoDB and install locally.
 
 	https://www.mongodb.com/try/download/community
 
 > Umeshs-MacBook-Pro:~ umeshpatil$ pwd
 /Users/umeshpatil
 
-1.	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
-
-2. Created spring-boot-starter-webflux project from https://start.spring.io/
-
-3.	Created project as:
-
-	https://developer.okta.com/blog/2018/09/24/reactive-apis-with-spring-webflux
-
-4.	Removing Lombok erros in Eclipse (very critical):
-
-	https://projectlombok.org/setup/eclipse
-
-5.	Installing MongoDB Compass
-
-	https://docs.mongodb.com/compass/current/install/
-	
-	
-	
-	
-	
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
 
 Umeshs-MacBook-Pro:~ umeshpatil$ brew services start mongodb-community@4.2
 ==> Tapping homebrew/services
@@ -85,9 +58,21 @@ To enable free monitoring, run the following command: db.enableFreeMonitoring()
 To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
 ---
 
+2) Created spring-boot-starter-webflux project from https://start.spring.io/
 
+3)	Created project as:
 
+	https://developer.okta.com/blog/2018/09/24/reactive-apis-with-spring-webflux
 
+4)	Removing Lombok erros in Eclipse (very critical):
+
+	https://projectlombok.org/setup/eclipse
+
+5)	Installing MongoDB Compass
+
+	https://docs.mongodb.com/compass/current/install/
+	
+6)	Various Spring MongoDB related properties in application.properties
 
 spring.data.mongodb.authentication-database= # Authentication database name.
 spring.data.mongodb.database=test # Database name.
@@ -100,17 +85,12 @@ spring.data.mongodb.repositories.enabled=true # Enable Mongo repositories.
 spring.data.mongodb.uri=mongodb://localhost/test # Mongo database URI. When set, host and port are ignored.
 spring.data.mongodb.username= # Login user of the mongo server.
 
-
-
+Useful links:
 
 https://stackoverflow.com/questions/55135393/exception-authenticating-mongocredential-and-uncategorized-mongo-db-exception/55138982
-
 https://stackoverflow.com/questions/17613901/warning-the-requested-profile-projectname-could-not-be-activated-because-it-do
-
 https://stackoverflow.com/questions/27153024/repository-element-was-not-specified-in-the-pom-inside-distributionmanagement-el/45352560
 
-
-
-
+7)	To start Maven test to debug:
 
 mvn -Dcom.neosemantix.survy.BasicSurveyTest -Dmaven.surefire.debug test
