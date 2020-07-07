@@ -3,7 +3,6 @@
 package com.neosemantix.survey.service;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

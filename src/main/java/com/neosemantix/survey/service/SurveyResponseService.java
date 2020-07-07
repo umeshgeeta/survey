@@ -2,6 +2,8 @@
 // Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,11 @@ public class SurveyResponseService {
 	 * @return String New id of the saved response
 	 */
 	public String record(SurveyResponse sr){
+		// For now set insertion time here.
+		// We could enable MongoDB Auditing enabled for MongoDB to
+		// set the insertion time. 
+		// (That would though increase dependency on specific DB.)
+		sr.setWhen(new Date());
 		Mono<SurveyResponse> savedMono = srRepository.save(sr);
 		SurveyResponse savedSr = savedMono.block();
 		resultService.processSurveyResponse(savedSr);

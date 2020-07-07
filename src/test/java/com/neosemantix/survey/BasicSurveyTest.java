@@ -159,7 +159,7 @@ public class BasicSurveyTest {
 		Map<Integer, SurveyQuestion> sdQuestions = sd.getQuestions();
 		SurveyResponse sr1 = new SurveyResponse();
 		sr1.setSurveyId(sd.getId());
-		sr1.setWhen(new Date());
+//		sr1.setWhen(new Date());
 		sr1.setUser(user);
 		Map<String, QuestionResponse> qrs = new HashMap<>();
 		
