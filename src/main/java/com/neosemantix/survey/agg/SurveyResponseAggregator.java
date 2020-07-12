@@ -12,6 +12,7 @@ import com.neosemantix.survey.model.QuestionResponse;
 import com.neosemantix.survey.model.SurveyAggregate;
 import com.neosemantix.survey.model.SurveyDef;
 import com.neosemantix.survey.model.SurveyQuestion;
+import com.neosemantix.survey.model.SurveyQuestionType;
 import com.neosemantix.survey.model.SurveyResponse;
 
 @Controller
@@ -21,74 +22,69 @@ public class SurveyResponseAggregator {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * @param sd
+	 * @param sa
+	 * @param sr SurveyResponse is expected to contain only non-null / non-empty responses.
+	 * @return
+	 */
 	public SurveyAggregate aggregateResponse(SurveyDef sd, SurveyAggregate sa, SurveyResponse sr) {
 		SurveyAggregate result = sa;
-		if (result != null) {
-			// need to count the incoming response
-			sa.setResponseCount(sa.getResponseCount() + 1);
-			Map<String, QuestionAggregate> qas = sa.getQuesAggregates();
-			if (qas == null) {
-				// This can happen, when the first response is essentiall blank with no question aggregates.
-				qas = new HashMap<>();
-			}
-			Map<String, QuestionResponse> responses = sr.getResponses();
-			for (String qid: responses.keySet()) {
-				QuestionAggregate qa = qas.get(qid);
-				qa = processQuestionAggregare(qa, responses.get(qid));
-				// Because incoming has an answer for the question for the first time while
-				// no survey response before this had contained an answer to this question.
-				// Hence we add back. In this case 'qa' at line before would be null.
-				qas.put(qid, qa);
-			}
-			// Those questions for which there is no response in the incoming survey response;
-			// will be left as is. 
-			sa.setQuesAggregates(qas);
-		} else {
-			// We regard it as the first response.
+		if (result == null) {
+			// this is the first response to this survey
+			result = new SurveyAggregate();
+			result.setSurveyDefId(sd.getId());
+		}
+		// need to count the incoming response
+		result.setResponseCount(result.getResponseCount() + 1);
+		Map<String, QuestionAggregate> qas = result.getQuesAggregates();
+		if (qas == null) {
+			// This can happen, when the first response is essentiall blank with no question aggregates.
+			qas = new HashMap<>();
+		}
+		Map<String, SurveyQuestion> qidMap = sd.getQuestionIdMap();
+		Map<String, QuestionResponse> responses = sr.getResponses();
+		for (String qid: responses.keySet()) {
+			SurveyQuestion sq = qidMap.get(qid);
+			QuestionAggregate qa = qas.get(qid);
+			qa = aggregateQuestionResponse(sq.getType(), qa, responses.get(qid));
+			// Because incoming has an answer for the question for the first time while
+			// no survey response before this had contained an answer to this question.
+			// Hence we add back. In this case 'qa' at line before would be null.
+			qas.put(qid, qa);
+		}
+		// Those questions for which there is no response in the incoming survey response;
+		// will be left as is. 
+		result.setQuesAggregates(qas);
+		if (qidMap.size() == responses.size()) {
+			result.setCompleteResoponses(result.getCompleteResoponses()+1);
 		}
 		return result;
 	}
 	
-	private QuestionAggregate processQuestionAggregare(QuestionAggregate qa, QuestionResponse qr) {
-		return null;
-	}
-	
-	private Map<String, Boolean> isCompleteSurveyResponse(SurveyDef sd, SurveyResponse sr) {
-		Map<String, Boolean> result = new HashMap<>();
-		Map<Integer, SurveyQuestion> quesDef = sd.getQuestions();
-		if (quesDef != null && !quesDef.isEmpty()) {
-			Map<String, QuestionResponse> resps = sr.getResponses();
-			for (Integer i: quesDef.keySet()) {
-				SurveyQuestion sq = quesDef.get(i);
-				QuestionResponse qr = resps.get(sq.getId());
-				if (!isCompleteQuestionResponse(sq, qr)) {
-					result.put(sq.getId(), false);
-				}
-			}
+	private QuestionAggregate aggregateQuestionResponse(SurveyQuestionType sqt, QuestionAggregate qa, QuestionResponse qr) {
+		// let us assume that qr is non-null and valid
+		if (qa == null) {
+			qa = new QuestionAggregate();
 		}
-		// else trivially false
-		return result;
-	}
-	
-	private boolean isCompleteQuestionResponse(SurveyQuestion sq, QuestionResponse qr) {
-		boolean result = false;
-		if (qr != null) {
-			switch (sq.getType()) {
-			// For multiple choice or multiple selection questions, we need at least one answer.
-			case MULTIPLE_CHOICE:
-			case MULTIPLE_SELECTION:
-				if (qr.getChoiceSelections() != null && qr.getChoiceSelections().length != 0) {
-					result = true;
+		qa.setRespCount(qa.getRespCount()+1);
+		if (sqt != SurveyQuestionType.TEXT_RESPONSE) {
+			Map<Integer, Integer> cs = qa.getChoiceCount();
+			if (cs == null) {
+				// this is the first time response
+				cs = new HashMap<>();
+			}
+			int[] selection = qr.getChoiceSelections();
+			for (int i=0; i<selection.length; i++) {
+				Integer cv = cs.get(i);
+				if (cv == null) {
+					cs.put(cv, 1);
+				} else {
+					cs.put(selection[i], cv+1);
 				}
-				break;
-			case TEXT_RESPONSE:
-				if (qr.getFreeResponse() != null && !qr.getFreeResponse().isEmpty()) {
-					result = true;
-				}
-				break;
 			}
 		} 
-		// else we regard it as false in any case
-		return result;
+		// else nothing to do; response is already validate as non-null and not empty
+		return qa;
 	}
 }

@@ -2,7 +2,6 @@
 // Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,35 +62,36 @@ public class BasicSurveyTest {
 		fluxsd.blockLast();
 		System.out.println("Deleted survey defs are: " + deleteSurveyDefIds);
 		boolean responsesDeleted = false;
-		for (String sdid: deleteSurveyDefIds) {
-			System.out.println("Will search responses for survey def: " + sdid);
-			Flux<SurveyResponse> responses = responseService.getAll(sdid);
-			
-			SurveyResponse firstResponse = responses.blockFirst();
-			SurveyResponse lastResponse = responses.blockLast();
-			if (firstResponse != null) {
-				// we delete all survey responses associated with this survey as well
-				Mono<ServerResponse> sr = responseService.delete(firstResponse);
-				int status = sr.block().rawStatusCode();
-				System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + firstResponse);
-				if (lastResponse != null) {
-					sr = responseService.delete(lastResponse);
-					status = sr.block().rawStatusCode();
-					System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + lastResponse);
-					responsesDeleted = true;
-				} else {
+		if (deleteSurveyDefIds.size() > 0) {
+			for (String sdid: deleteSurveyDefIds) {
+				System.out.println("Will search responses for survey def: " + sdid);
+				Flux<SurveyResponse> responses = responseService.getAll(sdid);
+				SurveyResponse firstResponse = responses.blockFirst();
+				SurveyResponse lastResponse = responses.blockLast();
+				if (firstResponse != null) {
+					// we delete all survey responses associated with this survey as well
+					Mono<ServerResponse> sr = responseService.delete(firstResponse);
+					int status = sr.block().rawStatusCode();
+					System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + firstResponse);
+					if (lastResponse != null) {
+						sr = responseService.delete(lastResponse);
+						status = sr.block().rawStatusCode();
+						System.out.println("SurveyResponse delete status is: "+ status + " Deleted SurveyResponse is: " + lastResponse);
+						responsesDeleted = true;
+					} else {
+						responsesDeleted = true;
+					}
+				}  else {
 					responsesDeleted = true;
 				}
-			}  else {
-				responsesDeleted = true;
 			}
-		}
-		while (!responsesDeleted) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			while (!responsesDeleted) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		savedSd = surveyDefService.create(buildTestSurvey()).block();

@@ -2,6 +2,7 @@
 // Author: Umesh Patil, Neosemantix, Inc.
 package com.neosemantix.survey.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -36,6 +37,20 @@ public class SurveyDef {
 	public SurveyDef(String name, String owner) {
 		this.name = name;
 		this.owner = owner;
+	}
+	
+	/**
+	 * Utility method which returns map of the question id and question.
+	 * 
+	 * @return Map<String, SurveyQuestion>  Key is question id.
+	 */
+	public Map<String, SurveyQuestion> getQuestionIdMap(){
+		Map<String, SurveyQuestion> result = new HashMap<>();
+		for(Integer order: questions.keySet()) {
+			SurveyQuestion sq = questions.get(order);
+			result.put(sq.getId(), sq);
+		}
+		return result;
 	}
 
 }

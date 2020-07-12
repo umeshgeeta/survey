@@ -26,12 +26,12 @@ import reactor.core.publisher.Mono;
 public class SurveyResponseService {
 
 	private final SurveyResponseRepository srRepository;
-	private final SurveyResultService resultService;
+	private final AggregateService aggService;
 	
 	public SurveyResponseService(@Autowired SurveyResponseRepository srr,
-			@Autowired SurveyResultService rs) {
+			@Autowired AggregateService rs) {
 		srRepository = srr;
-		resultService = rs;
+		aggService = rs;
 	}
 	
 	public Mono<SurveyResponse> getById(String id) {
@@ -50,7 +50,7 @@ public class SurveyResponseService {
 		sr.setWhen(new Date());
 		Mono<SurveyResponse> savedMono = srRepository.save(sr);
 		SurveyResponse savedSr = savedMono.block();
-		resultService.processSurveyResponse(savedSr);
+		aggService.processSurveyResponse(savedSr);
 		return savedSr.getId();
 	}
 	
